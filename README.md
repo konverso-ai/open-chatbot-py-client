@@ -1,5 +1,7 @@
 # Open Chat Bot Client package
 This is package for Open Chat Bot client. Contains simple utility to access and use bots compliant with the Alliance for Open Chatbot standard.
+Consult the following pages for details on the underline standard specifications: 
+<https://github.com/alliance-for-openchatbot/standard>
 
 ## Authors
 Initial implementation by Konverso in 2020
