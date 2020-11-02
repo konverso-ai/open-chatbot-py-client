@@ -1,6 +1,11 @@
 # Open Chat Bot Client package
-This is package for Open Chat Bot client. Contains simple utility to access and use bots compliant with the Alliance for Open Chatbot standard.
-Consult the following pages for details on the underline standard specifications: 
+This is package to help you interface with any chatbot compliant on the 
+Aliance for Open Chatbot standard. 
+
+This python package contains a number of small utilities to find, access and use these bots.
+
+
+This implementation is based on the standard defined  by the Alliance in: 
 <https://github.com/alliance-for-openchatbot/standard>
 
 ## Authors
@@ -17,8 +22,22 @@ This package may be installed using pip3 with the following commande:
 
 ### Getting a response from a chatbot
 Below is sample code to get a chat local stub, send a sentence to it and retrieve the bot response. 
-	from openchatbotclient import OpenChatBotClient	
-	client = OpenChatBotClient('dev02.konverso.ai', 8443, path='api')
-	response = client.ask("OPENBOT", "hello", method='post')
-	print(response)
+
+	from openchatbotclient import client 
+	bot = client('callbot.konverso.ai', 443, path='api') 
+	response = bot.ask("OPENBOT", "hello", method='post') 
+	print(response) 
+
 The response you get is a JSON using the standard Alliance format.
+
+### Looking up an enterprise bot
+The standard also includes the concept of bot registration. Companies may 
+register their bot using a standard JSON descriptor under a well known URL path:
+
+You may use the "repository" class to retrieve either a descriptor instance
+
+
+Or directly a "client" instance on which you may then invoke numerous chat requests. 
+
+
+
