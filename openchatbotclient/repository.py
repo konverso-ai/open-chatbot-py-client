@@ -60,10 +60,10 @@ class repository:
         """
 
         # Retrieve the descriptor for this domain
-        descriptor = self.get_descriptor(domain, headers=headers, data=data, auth=auth)
+        desc = self.get_descriptor(domain, headers=headers, data=data, auth=auth)
 
         # And build the client stub for it
-        return client.from_descriptor(descriptor)
+        return client.from_descriptor(desc)
 
 #
 # Sample code, validating the bots of the members of the Alliance for Open Chatbot.
