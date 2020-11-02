@@ -1,31 +1,50 @@
-import json
-import requests
-
-class OpenChatBotError(Exception):
-    """Exception for error response"""
-    def __init__(self, status: int, description: str):
-        self.status = status
-        self.description = description
-
-class OpenChatBotClient:
-    """Client for Open Chat Bot.
+"""Client for Open Chat Bot.
 
        Example of usage:
-            client = OpenChatBotClient('bot.domain.com', 8443, path='api')
-            response = client.ask("my-userId", "hello")
+            from openchatbotclient.client import client
+            myclient = client('bot.domain.com', 8443, path='api')
+            response = myclient.ask("my-userId", "hello")
 
        In this case next GET request will be invoked:
             https://bot.domain.com:8443/api/ask
         with params:
             {'userId': 'my-userId', 'query': 'hello'}
 
-    """
+Authors:
+    - Alexander Danilov from Konverso
+    - Amédée Potier (amedee.potier@konverso.ai) from Konverso
+
+History:
+    - 2019/11/01: Alexander: Initial class implementation
+    - 2020/11/02: Amédée: Renaming class to "client"
+    - 2020/11/02: Amédée: Adding the "from_descriptor" static method
+"""
+
+import json
+import requests
+
+from openchatbotclient.exception import chatbot_server_error
+
+class client:
     def __init__(self, host: str, port: int = 80, schema='https', path: str = None):
         self.host = host
         self.port = port
         self.schema = schema
         self.__path = path
         self._headers = {'Content-Type': 'application/json; charset=utf-8'}
+
+    @staticmethod
+    def from_descriptor(desc):
+        """Given a "descriptor" instance, returns a new "client" instance"""
+
+        # Import it here to avoid any cyclic import
+        from openchatbotclient.descriptor import descriptor
+
+        assert isinstance(desc, descriptor)
+
+        return client(host=desc.get_host(),
+                      port=desc.get_port(),
+                      path=desc.get_endpoint())
 
     @property
     def base_url(self) -> str:
@@ -41,7 +60,7 @@ class OpenChatBotClient:
         if code == 200:
             return json_data
         errorType = status.get('errorType', 'Unknown error')
-        raise OpenChatBotError(code, errorType)
+        raise chatbot_server_error(code, errorType)
 
     def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get'):
         """Invoke request to bot and receive answer
