@@ -48,9 +48,19 @@ The response is effectively a JSON in a format such as:
     }
 }
 
-A client group is a list of clients. This may be used to send a given
-user query to a number of bots and retrieve all results, typically
-to get the higher rank answer, or to compare the various performances, etc.
+The response object encapsulte a Client information, with a Response JSON, and 
+provides various utilities method to easily retrieve content out of the the JSON. 
+
+    resp = my_client.ask("my name", "my question", lang="en")
+
+    # (cl is going to be the same object as my_client)²
+    cl = resp.get_client()
+
+    # Get a boolean indicating if a response was received.
+    resp.is_success()
+
+    # Easily get the actual response text: 
+    resp.get_text()
 
 Authors:
     - Amédée Potier (amedee.potier@konverso.ai) from Konverso
