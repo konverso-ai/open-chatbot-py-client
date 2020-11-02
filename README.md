@@ -24,7 +24,7 @@ This package may be installed using pip3 with the following commande:
 Below is sample code to get a chat local stub, send a sentence to it and retrieve the bot response. 
 
 	from openchatbotclient import client 
-	bot = client('callbot.konverso.ai', 443, path='api') 
+	bot = client('https://callbot.konverso.ai', 443) 
 	response = bot.ask("OPENBOT", "hello", method='post') 
 	print(response) 
 
@@ -36,8 +36,19 @@ register their bot using a standard JSON descriptor under a well known URL path:
 
 You may use the "repository" class to retrieve either a descriptor instance
 
+    from openchatbotclient import repository
+    repo = repository()
 
-Or directly a "client" instance on which you may then invoke numerous chat requests. 
+    bot_descriptor = repo.get_descriptor("openchatbot.io")
+    print("Host: ", bot_descriptor.get_host())
 
+Or directly a "client" instance on which you may then invoke numerous chat requests.
 
+    bot = repo.get_client("openchatbot.io")
+    print("Client: ", bot)
+
+And you may then send chat text to these bots easily:
+
+    response = bot.ask("OPENBOT", "hello", method='post')
+    print(response)
 

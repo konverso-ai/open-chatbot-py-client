@@ -26,10 +26,9 @@ import requests
 from openchatbotclient.exception import chatbot_server_error
 
 class client:
-    def __init__(self, host: str, port: int = 80, schema='https', path: str = None):
+    def __init__(self, host: str, port: int = 80, path: str = None):
         self.host = host
         self.port = port
-        self.schema = schema
         self.__path = path
         self._headers = {'Content-Type': 'application/json; charset=utf-8'}
 
@@ -48,7 +47,7 @@ class client:
 
     @property
     def base_url(self) -> str:
-        url = "%s://%s:%d"%(self.schema, self.host, self.port)
+        url = "%s:%d"%(self.host, self.port)
         if self.__path:
             url += "/%s"%(self.__path)
         return url
@@ -87,9 +86,9 @@ class client:
             params['location'] = location
 
         if method == 'get':
-            response = requests.get("%s/ask"%(self.base_url), params=params)
+            response = requests.get("%s"%(self.base_url), params=params)
         elif method == 'post':
-            response = requests.post("%s/ask"%(self.base_url), data=json.dumps(params), headers=self._headers)
+            response = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers)
         else:
             raise RuntimeError("Unknown method '%s'"%(method))
         try:

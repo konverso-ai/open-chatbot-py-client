@@ -20,6 +20,8 @@ import requests
 from .exception import no_chatbot_descriptor, invalid_chatbot_descriptor
 
 from . import client
+from . import descriptor
+
 
 DESCRIPTOR_PATH = "/.well-known/openchatbot-configuration"
 
@@ -45,7 +47,7 @@ class repository:
             # We have a response.. let's validate this is a valid JSON
             try:
                 j = json.loads(r.content)
-                return j
+                return descriptor(j)
             except:
                 # Invalid content
                 raise invalid_chatbot_descriptor()
