@@ -33,7 +33,7 @@ ENDPOINT_LABEL = 'endpoint'
 PORT_LABEL = 'port'
 METHODS_LABEL = 'methods'
 
-ENDPOINT_DEFAULT = 'endpoint'
+ENDPOINT_DEFAULT = '/api/ask'
 PORT_DEFAULT = 'port'
 METHODS_DEFAULT = ['GET', 'POST']
 

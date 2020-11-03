@@ -23,14 +23,22 @@ History:
 import json
 import requests
 
-from openchatbotclient.exception import chatbot_server_error
+from .descriptor import ENDPOINT_DEFAULT
+
+from .exception import chatbot_server_error
 
 class client:
     def __init__(self, host: str, port: int = 80, path: str = None):
         self.host = host
         self.port = port
-        self.__path = path
+        self.__path = path or ENDPOINT_DEFAULT
         self._headers = {'Content-Type': 'application/json; charset=utf-8'}
+
+    def __str__(self):
+        # We extract the actual hostname.domain from the host
+        # https://myhost.mydomain => myhost.mydomain
+        #
+        return "client('%s')" % self.host.rsplit("/", 1)[-1]
 
     @staticmethod
     def from_descriptor(desc):
@@ -86,12 +94,13 @@ class client:
             params['location'] = location
 
         if method == 'get':
-            response = requests.get("%s"%(self.base_url), params=params)
+            r = requests.get("%s"%(self.base_url), params=params)
         elif method == 'post':
-            response = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers)
+            r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers)
         else:
             raise RuntimeError("Unknown method '%s'"%(method))
         try:
-            return self.__process_response(response.json())
+            from . import response
+            return response(self, self.__process_response(r.json()))
         except json.decoder.JSONDecodeError:
-            raise RuntimeError("Invalid response : %s"%(response.text))
+            raise RuntimeError("Invalid response : %s"%(r.text))
