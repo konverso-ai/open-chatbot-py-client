@@ -1,8 +1,8 @@
 # Open Chat Bot Client package
-This package is designed to help you interface with any chatbot compliant on the 
-Aliance for Open Chatbot standard. This package is designed for Python 3 environments.
+This python package contains a number of small utilities to find, access and use bots
+compatibles with the Alliance for Open ChatBot standards.
 
-This python package contains a number of small utilities to find, access and use these bots.
+This package is designed for Python 3 environments.
 
 This implementation is based on the standard defined  by the Alliance in: 
 <https://github.com/alliance-for-openchatbot/standard>
@@ -13,6 +13,14 @@ The Alliance web site is found at:
 ## Authors
 Initial implementation made by Konverso in 2020
 by  Alexander Danilov and Amedee Potier (<amedee.potier@konverso.ai>)
+
+## See also
+
+The actual API standard specifications: <https://github.com/alliance-for-openchatbot/standard>
+
+The definition of the standard bot descriptor:  <https://openchatbot.io/domainbots>
+
+An easy to use Web Client to easily add on your website a widget connected to any chatbot: <https://github.com/ohoachuck/openchatbot-webclient>
 
 ## License
 This package is released under the MIT license. Consult the LICENSE file in this folder.
@@ -29,7 +37,7 @@ Below is sample code to get a chat local stub, send a sentence to it and retriev
 
 	from openchatbotclient import client 
 	bot = client('https://callbot.konverso.ai', 443) 
-	response = bot.ask("OPENBOT", "hello", method='post') 
+	response = bot.ask("john", "hello", lang="en") 
 	print(response) 
 
 The response you get is a JSON using the standard Alliance format.
@@ -53,7 +61,7 @@ Or directly a "client" instance on which you may then invoke numerous chat reque
 
 And you may then send chat text to these bots easily:
 
-    response = bot.ask("OPENBOT", "hello", method='post')
+    response = bot.ask("john", "hello", lang="en")
     print(response)
 
 ### Querying multiple bots
