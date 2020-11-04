@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     from openchatbotclient import client
 
-    bot_konverso = client('https://callbot.konverso.ai', 443)
+    bot_konverso = client('https://callbot.konverso.ai', port=443, path='/api/ask')
 
     print(bot_konverso.base_url)
 
@@ -84,3 +84,9 @@ if __name__ == '__main__':
     # Or the one having the highest score
     # response = responses.get_with_max_score()
     # print("Got first response from: ", response)
+
+    # You may also retrieve the descriptor of any client
+    import json
+    print(json.dumps(bot_konverso.get_descriptor(), indent=4))
+
+
