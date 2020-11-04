@@ -12,6 +12,7 @@ History:
 if __name__ == '__main__':
 
     from openchatbotclient import client
+
     bot_konverso = client('https://callbot.konverso.ai', 443)
 
     print(bot_konverso.base_url)
@@ -44,12 +45,14 @@ if __name__ == '__main__':
     print(response)
 
     #
-    # Now let's create a second bot, doing an explicit declaration
+    # Now let's create more bots, doing explicit declarations
     #
     from openchatbotclient import client
+
     bot_konverso = client('https://callbot.konverso.ai', 443)
-    response = bot_konverso.ask("amedee", "hello")
-    print(response)
+
+    bot_doungdoung = client('https://doungdoung.com', 443, path='/api/doungdoung/v1.0/ask')
+
 
     #
     # Now let's create a second bot, doing an explicit declaration
@@ -57,8 +60,9 @@ if __name__ == '__main__':
     from openchatbotclient import client_group
 
     bots = client_group()
-    bots.append(bot_konverso)
     bots.append(bot_alliance)
+    bots.append(bot_konverso)
+    bots.append(bot_doungdoung)
 
     #
     # Now query the group of bots..
