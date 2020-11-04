@@ -23,16 +23,44 @@ History:
 import json
 import requests
 
-from .descriptor import ENDPOINT_DEFAULT
+from .descriptor import descriptor, ENDPOINT_DEFAULT
 
 from .exception import chatbot_server_error
 
 class client:
-    def __init__(self, host: str, port: int = 80, path: str = None):
+    def __init__(self, host: str, port: int = 0, path: str = None, desc: descriptor = None):
+        """Create a client that may be queried. The constructor parameters are:
+           - host: a host in the format protocol://domain, such as:
+              https://konverso.ai
+           - port: optional, only required if using none standard ports (i.e 8443 for example)
+           - path: the endpoint, defaults to /api/ask
+           - descriptor: optional, a descriptor instance
+
+        See also the fromDescriptor method to get a client.
+        """
+
+        # Host is in format:
+        # https://domain
         self.host = host
+
         self.port = port
         self.__path = path or ENDPOINT_DEFAULT
+        if not self.__path.startswith("/"):
+            self.__path = "/" + self.__path
+
         self._headers = {'Content-Type': 'application/json; charset=utf-8'}
+
+        if desc:
+            self.descriptor = desc
+        else:
+            self.descriptor = descriptor({
+                'openchatbot': {
+                    'endpoint': self.__path,
+                    'host': 'https://openchatbot.io',
+                    'port': 443,
+                    'methods': ['GET', 'POST']
+                }
+            })
 
     def __str__(self):
         # We extract the actual hostname.domain from the host
@@ -45,19 +73,25 @@ class client:
         """Given a "descriptor" instance, returns a new "client" instance"""
 
         # Import it here to avoid any cyclic import
-        from openchatbotclient.descriptor import descriptor
+        #from openchatbotclient.descriptor import descriptor
 
         assert isinstance(desc, descriptor)
 
         return client(host=desc.get_host(),
                       port=desc.get_port(),
-                      path=desc.get_endpoint())
+                      path=desc.get_endpoint(),
+                      desc=desc)
 
     @property
     def base_url(self) -> str:
-        url = "%s:%d"%(self.host, self.port)
+        url = self.host
+
+        if self.port:
+            url += ":%d" % self.port
+
         if self.__path:
-            url += "/%s"%(self.__path)
+            url += "%s"%(self.__path)
+
         return url
 
     @staticmethod
@@ -68,6 +102,12 @@ class client:
             return json_data
         errorType = status.get('errorType', 'Unknown error')
         raise chatbot_server_error(code, errorType)
+
+    def get_descriptor(self):
+        """Returns the related descriptor instance which may be posted for 
+           registering this bot on a domain
+        """
+        return self.descriptor
 
     def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get'):
         """Invoke request to bot and receive answer
