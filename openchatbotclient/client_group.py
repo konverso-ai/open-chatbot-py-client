@@ -33,7 +33,7 @@ class client_group(list):
             try:
                 json_result = cli.ask(userId=userId, query=query, lang=lang, location=location, method=method)
             except Exception as e:
-                print("Got error sending request to %s: %s", cli, e)
+                print("Got error sending request to %s (API '%s'): %s" % (cli, cli.base_url, e))
             else:
                 json_result_list.append(json_result)
 
