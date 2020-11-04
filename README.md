@@ -28,7 +28,7 @@ This package is released under the MIT license. Consult the LICENSE file in this
 ## Installation: 
 This package may be installed using pip3 with the following commande:
 
-    pip3 install -e git+https://bitbucket.org/konversoai/openchatbotclient.git#egg=AllianceForOpenChatBot
+    pip3 install -e git+https://github.com/konverso-ai/open-chatbot-py-client.git#egg=AllianceForOpenChatBot
 
 ## Usage notes: 
 
