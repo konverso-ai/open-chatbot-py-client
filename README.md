@@ -1,47 +1,42 @@
 # Open Chat Bot Client package
-This Python package contains utilities that allow you to find, access, and use the bots that are compliant with the Alliance for Open Chatbot standard. The package is designed for the Python 3 environments.
+This Python package contains utilities that allow you to find, access, and use the bots that are compliant with the Alliance for Open Chatbot standard. The package is designed for the Python 3 environments.  
 
 The implementation is based on the standard defined by the Alliance.  
 - The Alliance website: <https://www.alliance-open-chatbot.org/>  
 - The standard: <https://github.com/alliance-for-openchatbot/standard>  
 
 ## Authors
-Initial implementation made by Konverso in 2020
-by  Alexander Danilov and Amedee Potier (<amedee.potier@konverso.ai>)
+The initial implementation is made by Konverso in 2020 by Alexander Danilov and Amedee Potier (<amedee.potier@konverso.ai>)
 
 ## See also
-
-The actual API standard specifications: <https://github.com/alliance-for-openchatbot/standard>
-
-The definition of the standard bot descriptor:  <https://openchatbot.io/domainbots>
-
-An easy to use Web Client to easily add on your website a widget connected to any chatbot: <https://github.com/ohoachuck/openchatbot-webclient>
+- The API standard specifications: <https://github.com/alliance-for-openchatbot/standard>
+- The definition of the standard bot descriptor: <https://openchatbot.io/domainbots>
+- An easy-to-use web client that adds a widget connected to any chatbot to your website: <https://github.com/ohoachuck/openchatbot-webclient>
 
 ## License
-This package is released under the MIT license. Consult the LICENSE file in this folder.
+This package is released under the MIT license. To learn more about it, view the `LICENSE` file in this folder.
 
 ## Installation: 
-This package may be installed using pip3 with the following commande:
+You can install this package using pip3. To do so, run the following command:
 
     pip3 install -e git+https://github.com/konverso-ai/open-chatbot-py-client.git#egg=AllianceForOpenChatBot
 
-## Usage notes: 
+## Usage notes 
 
 ### Getting a response from a chatbot
-Below is sample code to get a chat local stub, send a sentence to it and retrieve the bot response. 
+The sample below demonstrates how to get a chat local stub, send a sentence to it, and retrieve the bot response. 
 
 	from openchatbotclient import client 
 	bot = client('https://callbot.konverso.ai', 443) 
 	response = bot.ask("john", "hello", lang="en") 
 	print(response) 
 
-The response you get is a JSON using the standard Alliance format.
+The response you get is a JSON file using the standard Alliance format.
 
 ### Looking up an enterprise bot
-The standard also includes the concept of bot registration. Companies may 
-register their bot using a standard JSON descriptor under a well known URL path:
+The standard includes the concept of bot registration. Companies can register their bot with the help of a standard JSON descriptor that is available at the following link: `/.well-known/openchatbot-configuration`.   
 
-You may use the "repository" class to retrieve either a descriptor instance
+Use the "repository" class to retrieve a descriptor instance:
 
     from openchatbotclient import repository
     repo = repository()
@@ -49,50 +44,58 @@ You may use the "repository" class to retrieve either a descriptor instance
     bot_descriptor = repo.get_descriptor("openchatbot.io")
     print("Host: ", bot_descriptor.get_host())
 
-Or directly a "client" instance on which you may then invoke numerous chat requests.
+Alternatively, you can use the "client" instance, where you can invoke multiple chat requests:
 
     bot = repo.get_client("openchatbot.io")
     print("Client: ", bot)
 
-And you may then send chat text to these bots easily:
+Then you can send chat text to these bots:
 
     response = bot.ask("john", "hello", lang="en")
     print(response)
 
 ### Querying multiple bots
 
-You can also work with multiple remotes bots, and collected group of responses. 
-Let's demonstrate such usage. We first create a second bot, this time
-doing an explicit declaration
+You can interact with multiple remote bots and manage multiple responses. This use case is demonstrated in the sample below. 
 
-    from openchatbotclient import client
-    bot_konverso = client('https://callbot.konverso.ai', 443)
+1. Create a second bot. This time it is done by an explicit declaration:
 
-And then we can create a group with these two bots:
+```
+from openchatbotclient import client
+bot_konverso = client('https://callbot.konverso.ai', 443)
+```
 
-    from openchatbotclient import client_group
+2. Create a group with these two bots:
 
-    bots = client_group()
-    bots.append(bot_konverso)
-    bots.append(bot_alliance)
+``` 
+from openchatbotclient import client_group
 
-We can easily send a user input to all bots in this group:
+bots = client_group()
+bots.append(bot_konverso)
+bots.append(bot_alliance)
+```
 
-    responses = bots.ask("amedee", "hello", lang="en")
-    print("Found response of size:", len(responses))
+3. Send user input to all the bots in this group:
 
-And then on the response_group object we get, we have various utilities to 
-extract the content of interest from it:
+```
+responses = bots.ask("amedee", "hello", lang="en")
+print("Found response of size:", len(responses))
+```
+
+4. You get the `response_group` object. Now you can use utilities to extract the content of interest from this object.
 
 Get one response:
 
-    response = responses.get_first()
-    if response:
-        print("Got first response from: ", response.get_client(), " : ", response.get_text())
-    else:
-        print("No response found !")
+```
+response = responses.get_first()
+   if response:
+      print("Got first response from: ", response.get_client(), " : ", response.get_text())
+   else:
+      print("No response found !")
+```
 
-Or Print all the available responses:
-
-    print("All reponses found:")
-    print(responses.get_all_string(response_format=" - {client}: {text}", separator="\n"))
+Print all available responses:
+```
+print("All reponses found:")
+print(responses.get_all_string(response_format=" - {client}: {text}", separator="\n"))
+```
