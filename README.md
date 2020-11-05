@@ -1,14 +1,9 @@
 # Open Chat Bot Client package
-This python package contains a number of small utilities to find, access and use bots
-compatibles with the Alliance for Open ChatBot standards.
+This Python package contains utilities that allow you to find, access, and use the bots that are compliant with the Alliance for Open Chatbot standard. The package is designed for the Python 3 environments.
 
-This package is designed for Python 3 environments.
-
-This implementation is based on the standard defined  by the Alliance in: 
-<https://github.com/alliance-for-openchatbot/standard>
-
-The Alliance web site is found at:
-<https://www.alliance-open-chatbot.org/>
+The implementation is based on the standard defined by the Alliance.  
+- The Alliance website: <https://www.alliance-open-chatbot.org/>  
+- The standard: <https://github.com/alliance-for-openchatbot/standard>  
 
 ## Authors
 Initial implementation made by Konverso in 2020
