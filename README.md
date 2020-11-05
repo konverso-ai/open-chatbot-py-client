@@ -16,7 +16,7 @@ The initial implementation is made by Konverso in 2020 by Alexander Danilov and 
 ## License
 This package is released under the MIT license. To learn more about it, view the `LICENSE` file in this folder.
 
-## Installation: 
+## Installation 
 You can install this package using pip3. To do so, run the following command:
 
     pip3 install -e git+https://github.com/konverso-ai/open-chatbot-py-client.git#egg=AllianceForOpenChatBot
