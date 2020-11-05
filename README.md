@@ -6,7 +6,7 @@ The implementation is based on the standard defined by the Alliance.
 - The standard: <https://github.com/alliance-for-openchatbot/standard>  
 
 ## Authors
-The initial implementation is made by Konverso in 2020 by Alexander Danilov and [Amedee Potier](amedee.potier@konverso.ai).
+The initial implementation is made by Konverso in 2020 by Alexander Danilov and Amedee Potier (amedee.potier@konverso.ai).
 
 ## See also
 - The API standard specifications: <https://github.com/alliance-for-openchatbot/standard>
