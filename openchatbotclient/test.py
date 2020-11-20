@@ -67,8 +67,8 @@ if __name__ == '__main__':
     #
     # Now query the group of bots..
     #
+    print("\n\n#### Sending 'hello' to a group of three bots")
     responses = bots.ask("amedee", "hello", lang="en")
-    print("Found response of size:", len(responses))
 
     # Print the first available response...
     response = responses.get_first()
@@ -86,6 +86,7 @@ if __name__ == '__main__':
     # print("Got first response from: ", response)
 
     # You may also retrieve the descriptor of any client
+    print("\n\n#### Generating a JSON descriptor for a bot")
     import json
     print(json.dumps(bot_konverso.get_descriptor(), indent=4))
 
