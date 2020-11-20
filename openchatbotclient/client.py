@@ -101,7 +101,8 @@ class client:
         if code == 200:
             return json_data
         errorType = status.get('errorType', 'Unknown error')
-        raise chatbot_server_error(code, errorType)
+        errorMsg = "%s: %s" % (errorType, str(json_data))
+        raise chatbot_server_error(code, errorMsg)
 
     def get_descriptor(self):
         """Returns the related descriptor instance which may be posted for 
@@ -109,7 +110,7 @@ class client:
         """
         return self.descriptor
 
-    def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get'):
+    def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get', timeout=None):
         """Invoke request to bot and receive answer
            Input parameters:
             - userId : user's identifier
@@ -134,9 +135,9 @@ class client:
             params['location'] = location
 
         if method == 'get':
-            r = requests.get("%s"%(self.base_url), params=params)
+            r = requests.get("%s"%(self.base_url), params=params, timeout=timeout)
         elif method == 'post':
-            r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers)
+            r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers, timeout=timeout)
         else:
             raise RuntimeError("Unknown method '%s'"%(method))
         try:
