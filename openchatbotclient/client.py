@@ -43,6 +43,8 @@ class client:
         # https://domain
         self.host = host
 
+        self.hostname = self.host.rsplit("/", 1)[-1]
+
         self.port = port
         self.__path = path or ENDPOINT_DEFAULT
         if not self.__path.startswith("/"):
@@ -62,11 +64,16 @@ class client:
                 }
             })
 
+        # The avatar may be used as a place holder for storing
+        # the image associated with the bot. (REVIEW. Should be added to the alliance standard ? 
+        #
+        self.avatar = None
+
     def __str__(self):
         # We extract the actual hostname.domain from the host
         # https://myhost.mydomain => myhost.mydomain
         #
-        return "client('%s')" % self.host.rsplit("/", 1)[-1]
+        return "client('%s')" % self.hostname
 
     @staticmethod
     def from_descriptor(desc):
