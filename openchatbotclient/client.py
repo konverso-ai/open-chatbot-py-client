@@ -65,7 +65,7 @@ class client:
             })
 
         # The avatar may be used as a place holder for storing
-        # the image associated with the bot. (REVIEW. Should be added to the alliance standard ? 
+        # the image associated with the bot. (REVIEW. Should be added to the alliance standard ?
         #
         self.avatar = None
 
@@ -88,6 +88,35 @@ class client:
                       port=desc.get_port(),
                       path=desc.get_endpoint(),
                       desc=desc)
+
+    @staticmethod
+    def from_url(url):
+        """Given a "descriptor" instance, returns a new "client" instance"""
+
+        # Extracting from the URL the protocol, the domain, the path
+        # token1://token3/token4
+        # protocol://domain/path
+        #
+        tokens = url.split("/", 4)
+
+        protocol = tokens[0]
+        domainport = tokens[2]
+
+        # domain may potentially be in the form
+        # domain:port
+        #
+        domainport_tokens = domainport.split(":")
+        if len(domainport_tokens) == 1:
+            domain = domainport_tokens[0]
+            port = None
+        else:
+            domain, port = domainport_tokens
+
+        path = tokens[3]
+
+        return client(host='%s//%s' % (protocol, domain),
+                      port=port,
+                      path=path)
 
     @property
     def base_url(self) -> str:
@@ -112,7 +141,7 @@ class client:
         raise chatbot_server_error(code, errorMsg)
 
     def get_descriptor(self):
-        """Returns the related descriptor instance which may be posted for 
+        """Returns the related descriptor instance which may be posted for
            registering this bot on a domain
         """
         return self.descriptor
@@ -142,13 +171,14 @@ class client:
             params['location'] = location
 
         if method == 'get':
-            r = requests.get("%s"%(self.base_url), params=params, timeout=timeout)
+            r = requests.get("%s"%(self.base_url), params=params, timeout=timeout, verify=False)
         elif method == 'post':
-            r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers, timeout=timeout)
+            r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers, timeout=timeout, verify=False)
         else:
             raise RuntimeError("Unknown method '%s'"%(method))
         try:
             from . import response
+            print(r)
             return response(self, self.__process_response(r.json()))
         except json.decoder.JSONDecodeError:
             raise RuntimeError("Invalid response : %s"%(r.text))
