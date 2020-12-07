@@ -115,7 +115,7 @@ class response:
     @property
     def code(self) -> int:
         """The HTTP response code, such as 200"""
-        return self.jso.get('status', {}).get('code', '')
+        return self.jso.get('status', {}).get('code', 0)
 
     @property
     def status(self) -> str:
