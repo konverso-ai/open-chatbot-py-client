@@ -30,6 +30,7 @@ if __name__ == '__main__':
     repo = repository()
 
     bot_descriptor = repo.get_descriptor("openchatbot.io")
+    print("Descriptor: ", bot_descriptor)
     print("Host: ", bot_descriptor.get_host())
 
     bot_alliance = repo.get_client("openchatbot.io")

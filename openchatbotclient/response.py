@@ -48,8 +48,8 @@ The response is effectively a JSON in a format such as:
     }
 }
 
-The response object encapsulte a Client information, with a Response JSON, and 
-provides various utilities method to easily retrieve content out of the the JSON. 
+The response object encapsulte a Client information, with a Response JSON, and
+provides various utilities method to easily retrieve content out of the the JSON.
 
     resp = my_client.ask("my name", "my question", lang="en")
 
@@ -59,7 +59,7 @@ provides various utilities method to easily retrieve content out of the the JSON
     # Get a boolean indicating if a response was received.
     resp.is_success()
 
-    # Easily get the actual response text: 
+    # Easily get the actual response text:
     resp.get_text()
 
 Authors:
@@ -84,6 +84,7 @@ class response:
         return 'response(%s => %s)' % (self.cli, self.get_text())
 
     def get_client(self):
+        """Returns an instance of 'client' class"""
         return self.cli
 
     def is_success(self):
@@ -92,3 +93,65 @@ class response:
     def get_text(self):
         return self.jso.get('response', {}).get('text', '')
 
+    #
+    # Set of utility properties to grab the most typical data
+    # from the json
+    #
+
+    #
+    # Related to the query:
+    #
+    @property
+    def query(self) -> str:
+        return self.jso.get('response', {}).get('query', '')
+
+    @property
+    def userId(self) -> str:
+        return self.jso.get('response', {}).get('userId', '')
+
+    #
+    # Response data
+    #
+    @property
+    def code(self) -> int:
+        """The HTTP response code, such as 200"""
+        return self.jso.get('status', {}).get('code', 0)
+
+    @property
+    def status(self) -> str:
+        """The string 'success' if success"""
+        return self.jso.get('status', {}).get('status', '')
+
+    @property
+    def text(self) -> str:
+        """The textual response received"""
+        return self.jso.get('response', {}).get('text', '')
+
+    @property
+    def botName(self) -> str:
+        """The name of the remote bot"""
+        return self.jso.get('meta', {}).get('botName', '')
+
+    @property
+    def botIcon(self) -> str:
+        """The avatar of the remote bot, as a URL"""
+        return self.jso.get('meta', {}).get('botIcon', '')
+
+
+    #
+    # Other useful metadata
+    #
+    @property
+    def version(self) -> str:
+        """The software version of the bot returning the response"""
+        return self.jso.get('meta', {}).get('version', '')
+
+    @property
+    def copyright(self) -> str:
+        """The copyright information of the bot returning the response"""
+        return self.jso.get('meta', {}).get('copyright', '')
+
+    @property
+    def authors(self) -> list:
+        """The authors of the bot returning the response"""
+        return self.jso.get('meta', {}).get('authors', [])
