@@ -69,29 +69,21 @@ History:
     - 2020/11/02: Amédée: Initial class implementation
 """
 
-from . import client
+class Response:
 
-class response:
-
-    def __init__(self, cli: client, data: dict):
+    def __init__(self, client, data: dict):
         """client is a client instance
            data is a json
         """
-        self.cli = cli
+        self.client = client
         self.jso = data
 
     def __str__(self):
-        return 'response(%s => %s)' % (self.cli, self.get_text())
+        return 'response(%s => %s)' % (self.client, self.text)
 
-    def get_client(self):
-        """Returns an instance of 'client' class"""
-        return self.cli
-
+    @property
     def is_success(self):
-        return self.jso.get('status', {}).get('status') == 'success'
-
-    def get_text(self):
-        return self.jso.get('response', {}).get('text', '')
+        return self.status == 'success'
 
     #
     # Set of utility properties to grab the most typical data
@@ -106,7 +98,7 @@ class response:
         return self.jso.get('response', {}).get('query', '')
 
     @property
-    def userId(self) -> str:
+    def user_id(self) -> str:
         return self.jso.get('response', {}).get('userId', '')
 
     #
@@ -128,12 +120,12 @@ class response:
         return self.jso.get('response', {}).get('text', '')
 
     @property
-    def botName(self) -> str:
+    def bot_name(self) -> str:
         """The name of the remote bot"""
         return self.jso.get('meta', {}).get('botName', '')
 
     @property
-    def botIcon(self) -> str:
+    def bot_icon(self) -> str:
         """The avatar of the remote bot, as a URL"""
         return self.jso.get('meta', {}).get('botIcon', '')
 

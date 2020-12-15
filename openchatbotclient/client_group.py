@@ -11,12 +11,13 @@ History:
     - 2020/11/02: Amédée: Initial class implementation
 """
 
-from . import client, response_group
+from .client import Client
+from .response_group import ResponseGroup
 
-class client_group(list):
+class ClientGroup(list):
 
     def append(self, cli):
-        assert isinstance(cli, client)
+        assert isinstance(cli, Client)
         super().append(cli)
 
     def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get'):
@@ -27,7 +28,7 @@ class client_group(list):
            Returns an instance of response_group
         """
 
-        json_result_list = response_group.response_group()
+        json_result_list = ResponseGroup()
 
         for cli in self:
             try:

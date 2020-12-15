@@ -11,27 +11,28 @@ History:
 
 if __name__ == '__main__':
 
-    from openchatbotclient import client
+    from openchatbotclient import Client
 
-    bot_konverso = client('https://callbot.konverso.ai', port=443, path='/api/ask')
-
-    print(bot_konverso.base_url)
+    bot_konverso = Client('https://callbot.konverso.ai', port=443, path='/api/ask')
 
     response = bot_konverso.ask("amedee", "hello", lang="fr")
     print(response)
 
-    #import sys
-    #sys.exit(0)
-
     #
     # Use the Repository to retrieve a Client or a Descriptor
     #
-    from openchatbotclient import repository
-    repo = repository()
+    from openchatbotclient import Repository
+    repo = Repository()
+
+    print("EDF Descriptor: ", str(repo.get_descriptor("kwalys.com")))
+
+    bot_kwalys = repo.get_client("kwalys.com")
+    response = bot_kwalys.ask("amedee", "hello", lang="fr")
+    print("EDF replies: ", response.text)
 
     bot_descriptor = repo.get_descriptor("openchatbot.io")
     print("Descriptor: ", bot_descriptor)
-    print("Host: ", bot_descriptor.get_host())
+    print("Host: ", bot_descriptor.host)
 
     bot_alliance = repo.get_client("openchatbot.io")
     print("Client: ", bot_alliance)
@@ -48,19 +49,19 @@ if __name__ == '__main__':
     #
     # Now let's create more bots, doing explicit declarations
     #
-    from openchatbotclient import client
+    from openchatbotclient import Client
 
-    bot_konverso = client('https://callbot.konverso.ai', 443)
+    bot_konverso = Client('https://callbot.konverso.ai', 443)
 
-    bot_doungdoung = client('https://doungdoung.com', 443, path='/api/doungdoung/v1.0/ask')
+    bot_doungdoung = Client('https://doungdoung.com', 443, path='/api/doungdoung/v1.0/ask')
 
 
     #
     # Now let's create a second bot, doing an explicit declaration
     #
-    from openchatbotclient import client_group
+    from openchatbotclient import ClientGroup
 
-    bots = client_group()
+    bots = ClientGroup()
     bots.append(bot_alliance)
     bots.append(bot_konverso)
     bots.append(bot_doungdoung)
@@ -74,7 +75,7 @@ if __name__ == '__main__':
     # Print the first available response...
     response = responses.get_first()
     if response:
-        print("Got first response from: ", response.get_client(), " : ", response.get_text())
+        print("Got first response from: ", response.client, " : ", response.text)
     else:
         print("No response found !")
 
@@ -89,6 +90,13 @@ if __name__ == '__main__':
     # You may also retrieve the descriptor of any client
     print("\n\n#### Generating a JSON descriptor for a bot")
     import json
-    print(json.dumps(bot_konverso.get_descriptor(), indent=4))
+    print(json.dumps(bot_konverso.descriptor, indent=4))
 
+    print("\n\n#### Testing wikipedia")
+    bot_doungdoung = Client.from_url('https://doungdoung.com/api/wikipedia/v1.0/ask')
+    response = bot_doungdoung.ask("amedee", "hello", lang="fr")
+    print("Wikipedia says: %s", response.text)
 
+    bot_kwalys = repo.get_client("kwalys.com")
+    response = bot_kwalys.ask("amedee", "hello", lang="fr")
+    print("EDF says: %s", response.text)
