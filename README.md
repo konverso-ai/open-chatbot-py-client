@@ -26,8 +26,8 @@ You can install this package using pip3. To do so, run the following command:
 ### Getting a response from a chatbot
 The sample below demonstrates how to get a chat local stub, send a sentence to it, and retrieve the bot response. 
 
-	from openchatbotclient import client 
-	bot = client('https://callbot.konverso.ai', 443) 
+	from openchatbotclient import Client 
+	bot = Client('https://callbot.konverso.ai', 443) 
 	response = bot.ask("john", "hello", lang="en") 
 	print(response) 
 
@@ -38,8 +38,8 @@ The standard includes the concept of bot registration. Companies can register th
 
 Use the "repository" class to retrieve a descriptor instance:
 
-    from openchatbotclient import repository
-    repo = repository()
+    from openchatbotclient import Repository
+    repo = Repository()
 
     bot_descriptor = repo.get_descriptor("openchatbot.io")
     print("Host: ", bot_descriptor.get_host())
@@ -61,16 +61,16 @@ You can interact with multiple remote bots and manage multiple responses. This u
 1. Create a second bot. This time it is done by an explicit declaration:
 
 ```
-from openchatbotclient import client
+from openchatbotclient import Client
 bot_konverso = client('https://callbot.konverso.ai', 443)
 ```
 
 2. Create a group with these two bots:
 
 ``` 
-from openchatbotclient import client_group
+from openchatbotclient import ClientGroup
 
-bots = client_group()
+bots = ClientGroup()
 bots.append(bot_konverso)
 bots.append(bot_alliance)
 ```
