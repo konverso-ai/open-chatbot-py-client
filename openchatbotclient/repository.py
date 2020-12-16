@@ -17,15 +17,14 @@ import json
 import requests
 
 
-from .exception import no_chatbot_descriptor, invalid_chatbot_descriptor
+from .exception import NoChatbotDescriptorError, InvalidChatbotDescriptorError
 
-from . import client
-from . import descriptor
+from .descriptor import Descriptor
 
 
 DESCRIPTOR_PATH = "/.well-known/openchatbot-configuration"
 
-class repository:
+class Repository:
     def __init__(self):
         pass
 
@@ -41,18 +40,18 @@ class repository:
         r = requests.get(url, headers=headers, data=data, auth=auth, verify=False)
 
         if r is None:
-            raise no_chatbot_descriptor()
+            raise NoChatbotDescriptorError()
 
         if r.status_code in (200, 201, 202, 204, 206):
             # We have a response.. let's validate this is a valid JSON
             try:
                 j = json.loads(r.content)
-                return descriptor(j)
+                return Descriptor(j)
             except:
                 # Invalid content
-                raise invalid_chatbot_descriptor()
+                raise InvalidChatbotDescriptorError()
 
-        raise no_chatbot_descriptor()
+        raise NoChatbotDescriptorError()
 
     def get_client(self, domain, headers=None, data=None, auth=None):
         """Given a particular domain, attempts to retrieve the related
@@ -63,13 +62,15 @@ class repository:
         desc = self.get_descriptor(domain, headers=headers, data=data, auth=auth)
 
         # And build the client stub for it
-        return client.from_descriptor(desc)
+        # Inner include to avoid any risk of cyclic imports
+        from .client import Client
+        return Client.from_descriptor(desc)
 
 #
 # Sample code, validating the bots of the members of the Alliance for Open Chatbot.
 #
 if __name__ == '__main__':
-    repo = repository()
+    repo = Repository()
 
     for d in ("www.konverso.ai", "www.proxem.com", "www.kwalys.com", "phebe.io", "synapse-developpement.fr", "openchatbot.io"):
 

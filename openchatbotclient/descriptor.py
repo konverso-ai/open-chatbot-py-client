@@ -25,7 +25,7 @@ See the module "repository" which has utility methods to retrieve descriptors
 
 """
 
-from openchatbotclient.exception import invalid_chatbot_descriptor
+from .exception import InvalidChatbotDescriptorError
 
 OPENCHATBOT_LABEL = 'openchatbot'
 HOST_LABEL = 'host'
@@ -37,26 +37,31 @@ ENDPOINT_DEFAULT = '/api/ask'
 PORT_DEFAULT = 'port'
 METHODS_DEFAULT = ['GET', 'POST']
 
-class descriptor(dict):
+class Descriptor(dict):
     def __init__(self, data=None):
         super().__init__()
         if data:
             self.update(data)
 
-    def get_host(self):
+    @property
+    def host(self):
         try:
             return self[OPENCHATBOT_LABEL].get(HOST_LABEL)
         except KeyError:
-            raise invalid_chatbot_descriptor()
+            raise InvalidChatbotDescriptorError()
 
-    def get_endpoint(self):
+    @property
+    def endpoint(self):
         return self[OPENCHATBOT_LABEL].get(ENDPOINT_LABEL, ENDPOINT_DEFAULT)
 
-    def get_port(self):
+    @property
+    def port(self):
         return self[OPENCHATBOT_LABEL].get(PORT_LABEL, PORT_DEFAULT)
 
-    def get_methods(self):
+    @property
+    def methods(self):
         return self[OPENCHATBOT_LABEL].get(METHODS_LABEL, METHODS_DEFAULT)
 
-    def get_url(self):
-        return '%s:%d%s' % (self.get_host(), self.get_port(), self.get_endpoint())
+    @property
+    def url(self):
+        return '%s:%d%s' % (self.host, self.port, self.endpoint)

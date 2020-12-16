@@ -14,13 +14,13 @@ History:
     - 2020/11/02: Amédée: Initial class implementation
 """
 
-from .response import response
+from .response import Response
 
-class response_group(list):
+class ResponseGroup(list):
 
-    def append(self, resp: response):
-        assert isinstance(resp, response)
-        super().append(resp)
+    def append(self, response: Response):
+        assert isinstance(response, Response)
+        super().append(response)
 
     def get_first(self):
         """returns the first non empty Response or None of no Response was found
@@ -43,9 +43,9 @@ class response_group(list):
            - text: the textual response
         """
         content_list = []
-        for r in self:
-            content = response_format.format(client=str(r.get_client()),
-                                             text=str(r.get_text()))
+        for response in self:
+            content = response_format.format(client=str(response.client),
+                                             text=str(response.text))
             content_list.append(content)
 
         return separator.join(content_list)
