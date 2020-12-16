@@ -76,7 +76,7 @@ class Response:
            data is a json
         """
         self.client = client
-        self.jso = data
+        self.json = data
 
     def __str__(self):
         return 'response(%s => %s)' % (self.client, self.text)
@@ -95,11 +95,11 @@ class Response:
     #
     @property
     def query(self) -> str:
-        return self.jso.get('response', {}).get('query', '')
+        return self.json.get('response', {}).get('query', '')
 
     @property
     def user_id(self) -> str:
-        return self.jso.get('response', {}).get('userId', '')
+        return self.json.get('response', {}).get('userId', '')
 
     #
     # Response data
@@ -107,27 +107,27 @@ class Response:
     @property
     def code(self) -> int:
         """The HTTP response code, such as 200"""
-        return self.jso.get('status', {}).get('code', 0)
+        return self.json.get('status', {}).get('code', 0)
 
     @property
     def status(self) -> str:
         """The string 'success' if success"""
-        return self.jso.get('status', {}).get('status', '')
+        return self.json.get('status', {}).get('status', '')
 
     @property
     def text(self) -> str:
         """The textual response received"""
-        return self.jso.get('response', {}).get('text', '')
+        return self.json.get('response', {}).get('text', '')
 
     @property
     def bot_name(self) -> str:
         """The name of the remote bot"""
-        return self.jso.get('meta', {}).get('botName', '')
+        return self.json.get('meta', {}).get('botName', '')
 
     @property
     def bot_icon(self) -> str:
         """The avatar of the remote bot, as a URL"""
-        return self.jso.get('meta', {}).get('botIcon', '')
+        return self.json.get('meta', {}).get('botIcon', '')
 
 
     #
@@ -136,14 +136,14 @@ class Response:
     @property
     def version(self) -> str:
         """The software version of the bot returning the response"""
-        return self.jso.get('meta', {}).get('version', '')
+        return self.json.get('meta', {}).get('version', '')
 
     @property
     def copyright(self) -> str:
         """The copyright information of the bot returning the response"""
-        return self.jso.get('meta', {}).get('copyright', '')
+        return self.json.get('meta', {}).get('copyright', '')
 
     @property
     def authors(self) -> list:
         """The authors of the bot returning the response"""
-        return self.jso.get('meta', {}).get('authors', [])
+        return self.json.get('meta', {}).get('authors', [])

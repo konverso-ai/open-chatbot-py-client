@@ -16,9 +16,9 @@ from .response_group import ResponseGroup
 
 class ClientGroup(list):
 
-    def append(self, cli):
-        assert isinstance(cli, Client)
-        super().append(cli)
+    def append(self, client):
+        assert isinstance(client, Client)
+        super().append(client)
 
     def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get'):
         """Invoke request to each of the bots in the group
