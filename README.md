@@ -27,8 +27,8 @@ You can install this package using pip3. To do so, run the following command:
 The sample below demonstrates how to get a chat local stub, send a sentence to it, and retrieve the bot response. 
 
 	from openchatbotclient import Client 
-	bot = Client('https://callbot.konverso.ai', 443) 
-	response = bot.ask("john", "hello", lang="en") 
+	client = Client('https://callbot.konverso.ai', 443) 
+	response = client.ask("john", "hello", lang="en") 
 	print(response) 
 
 The response you get is a JSON file using the standard Alliance format.
