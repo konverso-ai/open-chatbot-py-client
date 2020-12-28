@@ -45,7 +45,13 @@ class Client:
 
         self.hostname = self.host.rsplit("/", 1)[-1]
 
-        self.port = port
+        if port:
+            self.port = port
+        elif self.host.startswith("https"):
+            self.port = 443
+        else:
+            self.port = 80
+
         self.__path = path or ENDPOINT_DEFAULT
         if not self.__path.startswith("/"):
             self.__path = "/" + self.__path
@@ -94,10 +100,10 @@ class Client:
         """Given a "descriptor" instance, returns a new "client" instance"""
 
         # Extracting from the URL the protocol, the domain, the path
-        # token1://token3/token4
+        # token0://token2/token3
         # protocol://domain/path
         #
-        tokens = url.split("/", 4)
+        tokens = url.split("/", 3)
 
         protocol = tokens[0]
         domainport = tokens[2]
@@ -146,6 +152,10 @@ class Client:
         """
         return self.descriptor
 
+    @property
+    def api_path(self):
+        return self.__path
+
     def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get', timeout=None):
         """Invoke request to bot and receive answer
            Input parameters:
@@ -171,8 +181,8 @@ class Client:
             params['location'] = location
 
         if method == 'get':
-            print(self.base_url)
-            print(params)
+            #print(self.base_url)
+            #print(params)
             r = requests.get("%s"%(self.base_url), params=params, timeout=timeout, verify=False)
         elif method == 'post':
             r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers, timeout=timeout, verify=False)
@@ -181,7 +191,7 @@ class Client:
         try:
             # Inner import to avoid cyclic include
             from . import Response
-            print(r)
+            #print(r)
             return Response(self, self.__process_response(r.json()))
         except json.decoder.JSONDecodeError:
             raise RuntimeError("Invalid response : %s"%(r.text))
