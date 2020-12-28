@@ -23,12 +23,12 @@ History:
 import json
 import requests
 
-from .descriptor import descriptor, ENDPOINT_DEFAULT
+from .descriptor import Descriptor, ENDPOINT_DEFAULT
 
-from .exception import chatbot_server_error
+from .exception import ChatbotServerError
 
-class client:
-    def __init__(self, host: str, port: int = 0, path: str = None, desc: descriptor = None):
+class Client:
+    def __init__(self, host: str, port: int = 0, path: str = None, descriptor: Descriptor = None):
         """Create a client that may be queried. The constructor parameters are:
            - host: a host in the format protocol://domain, such as:
               https://konverso.ai
@@ -45,17 +45,23 @@ class client:
 
         self.hostname = self.host.rsplit("/", 1)[-1]
 
-        self.port = port
+        if port:
+            self.port = port
+        elif self.host.startswith("https"):
+            self.port = 443
+        else:
+            self.port = 80
+
         self.__path = path or ENDPOINT_DEFAULT
         if not self.__path.startswith("/"):
             self.__path = "/" + self.__path
 
         self._headers = {'Content-Type': 'application/json; charset=utf-8'}
 
-        if desc:
-            self.descriptor = desc
+        if descriptor:
+            self.descriptor = descriptor
         else:
-            self.descriptor = descriptor({
+            self.descriptor = Descriptor({
                 'openchatbot': {
                     'endpoint': self.__path,
                     'host': 'https://openchatbot.io',
@@ -76,28 +82,28 @@ class client:
         return "client('%s')" % self.hostname
 
     @staticmethod
-    def from_descriptor(desc):
+    def from_descriptor(descriptor):
         """Given a "descriptor" instance, returns a new "client" instance"""
 
         # Import it here to avoid any cyclic import
         #from openchatbotclient.descriptor import descriptor
 
-        assert isinstance(desc, descriptor)
+        assert isinstance(descriptor, Descriptor)
 
-        return client(host=desc.get_host(),
-                      port=desc.get_port(),
-                      path=desc.get_endpoint(),
-                      desc=desc)
+        return Client(host=descriptor.host,
+                      port=descriptor.port,
+                      path=descriptor.endpoint,
+                      descriptor=descriptor)
 
     @staticmethod
     def from_url(url):
         """Given a "descriptor" instance, returns a new "client" instance"""
 
         # Extracting from the URL the protocol, the domain, the path
-        # token1://token3/token4
+        # token0://token2/token3
         # protocol://domain/path
         #
-        tokens = url.split("/", 4)
+        tokens = url.split("/", 3)
 
         protocol = tokens[0]
         domainport = tokens[2]
@@ -114,7 +120,7 @@ class client:
 
         path = tokens[3]
 
-        return client(host='%s//%s' % (protocol, domain),
+        return Client(host='%s//%s' % (protocol, domain),
                       port=port,
                       path=path)
 
@@ -138,13 +144,17 @@ class client:
             return json_data
         errorType = status.get('errorType', 'Unknown error')
         errorMsg = "%s: %s" % (errorType, str(json_data))
-        raise chatbot_server_error(code, errorMsg)
+        raise ChatbotServerError(code, errorMsg)
 
     def get_descriptor(self):
         """Returns the related descriptor instance which may be posted for
            registering this bot on a domain
         """
         return self.descriptor
+
+    @property
+    def api_path(self):
+        return self.__path
 
     def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get', timeout=None):
         """Invoke request to bot and receive answer
@@ -171,14 +181,17 @@ class client:
             params['location'] = location
 
         if method == 'get':
+            #print(self.base_url)
+            #print(params)
             r = requests.get("%s"%(self.base_url), params=params, timeout=timeout, verify=False)
         elif method == 'post':
             r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers, timeout=timeout, verify=False)
         else:
             raise RuntimeError("Unknown method '%s'"%(method))
         try:
-            from . import response
-            print(r)
-            return response(self, self.__process_response(r.json()))
+            # Inner import to avoid cyclic include
+            from . import Response
+            #print(r)
+            return Response(self, self.__process_response(r.json()))
         except json.decoder.JSONDecodeError:
             raise RuntimeError("Invalid response : %s"%(r.text))

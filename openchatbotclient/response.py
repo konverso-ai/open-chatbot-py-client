@@ -69,29 +69,21 @@ History:
     - 2020/11/02: Amédée: Initial class implementation
 """
 
-from . import client
+class Response:
 
-class response:
-
-    def __init__(self, cli: client, data: dict):
+    def __init__(self, client, data: dict):
         """client is a client instance
            data is a json
         """
-        self.cli = cli
-        self.jso = data
+        self.client = client
+        self.json = data
 
     def __str__(self):
-        return 'response(%s => %s)' % (self.cli, self.get_text())
+        return 'response(%s => %s)' % (self.client, self.text)
 
-    def get_client(self):
-        """Returns an instance of 'client' class"""
-        return self.cli
-
+    @property
     def is_success(self):
-        return self.jso.get('status', {}).get('status') == 'success'
-
-    def get_text(self):
-        return self.jso.get('response', {}).get('text', '')
+        return self.status == 'success'
 
     #
     # Set of utility properties to grab the most typical data
@@ -103,11 +95,11 @@ class response:
     #
     @property
     def query(self) -> str:
-        return self.jso.get('response', {}).get('query', '')
+        return self.json.get('response', {}).get('query', '')
 
     @property
-    def userId(self) -> str:
-        return self.jso.get('response', {}).get('userId', '')
+    def user_id(self) -> str:
+        return self.json.get('response', {}).get('userId', '')
 
     #
     # Response data
@@ -115,27 +107,27 @@ class response:
     @property
     def code(self) -> int:
         """The HTTP response code, such as 200"""
-        return self.jso.get('status', {}).get('code', 0)
+        return self.json.get('status', {}).get('code', 0)
 
     @property
     def status(self) -> str:
         """The string 'success' if success"""
-        return self.jso.get('status', {}).get('status', '')
+        return self.json.get('status', {}).get('status', '')
 
     @property
     def text(self) -> str:
         """The textual response received"""
-        return self.jso.get('response', {}).get('text', '')
+        return self.json.get('response', {}).get('text', '')
 
     @property
-    def botName(self) -> str:
+    def bot_name(self) -> str:
         """The name of the remote bot"""
-        return self.jso.get('meta', {}).get('botName', '')
+        return self.json.get('meta', {}).get('botName', '')
 
     @property
-    def botIcon(self) -> str:
+    def bot_icon(self) -> str:
         """The avatar of the remote bot, as a URL"""
-        return self.jso.get('meta', {}).get('botIcon', '')
+        return self.json.get('meta', {}).get('botIcon', '')
 
 
     #
@@ -144,14 +136,14 @@ class response:
     @property
     def version(self) -> str:
         """The software version of the bot returning the response"""
-        return self.jso.get('meta', {}).get('version', '')
+        return self.json.get('meta', {}).get('version', '')
 
     @property
     def copyright(self) -> str:
         """The copyright information of the bot returning the response"""
-        return self.jso.get('meta', {}).get('copyright', '')
+        return self.json.get('meta', {}).get('copyright', '')
 
     @property
     def authors(self) -> list:
         """The authors of the bot returning the response"""
-        return self.jso.get('meta', {}).get('authors', [])
+        return self.json.get('meta', {}).get('authors', [])

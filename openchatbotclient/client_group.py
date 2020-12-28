@@ -11,13 +11,14 @@ History:
     - 2020/11/02: Amédée: Initial class implementation
 """
 
-from . import client, response_group
+from .client import Client
+from .response_group import ResponseGroup
 
-class client_group(list):
+class ClientGroup(list):
 
-    def append(self, cli):
-        assert isinstance(cli, client)
-        super().append(cli)
+    def append(self, client):
+        assert isinstance(client, Client)
+        super().append(client)
 
     def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get'):
         """Invoke request to each of the bots in the group
@@ -27,13 +28,13 @@ class client_group(list):
            Returns an instance of response_group
         """
 
-        json_result_list = response_group.response_group()
+        json_result_list = ResponseGroup()
 
-        for cli in self:
+        for client in self:
             try:
-                json_result = cli.ask(userId=userId, query=query, lang=lang, location=location, method=method)
+                json_result = client.ask(userId=userId, query=query, lang=lang, location=location, method=method)
             except Exception as e:
-                print("Got error sending request to %s (API '%s'): %s" % (cli, cli.base_url, e))
+                print("Got error sending request to %s (API '%s'): %s" % (client, client.base_url, e))
             else:
                 json_result_list.append(json_result)
 
