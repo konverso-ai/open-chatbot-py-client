@@ -19,9 +19,12 @@ The initial implementation is made by Konverso in 2020 by Alexander Danilov and 
 See also
 --------
 
- - The API standard specifications: https://github.com/alliance-for-openchatbot/standard
- - The definition of the standard bot descriptor: https://openchatbot.io/domainbots
- - The easy-to-use web client that adds a widget connected to any chatbot to your website: https://github.com/ohoachuck/openchatbot-webclient
+ - The API standard specifications:
+       https://github.com/alliance-for-openchatbot/standard
+ - The definition of the standard bot descriptor:
+       https://openchatbot.io/domainbots
+ - The easy-to-use web client that adds a widget connected to any chatbot to your website:
+       https://github.com/ohoachuck/openchatbot-webclient
 
 License
 -------
