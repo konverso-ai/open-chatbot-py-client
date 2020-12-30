@@ -13,9 +13,15 @@ if __name__ == '__main__':
 
     from openchatbotclient import Client
 
-    bot_konverso = Client('https://callbot.konverso.ai', port=443, path='/api/ask')
 
+    # Create a client using its constructor  and query it
+    bot_konverso = Client('https://callbot.konverso.ai', port=443, path='/api/ask')
     response = bot_konverso.ask("amedee", "hello", lang="fr")
+    print(response)
+
+    # Create a client using a URL pointing to its open chatbot API
+    bot_konverso = Client.from_url('https://callbot.konverso.ai/api/ask')
+    response = bot_konverso.ask("amedee", "hello you", lang="fr")
     print(response)
 
     #
@@ -92,11 +98,11 @@ if __name__ == '__main__':
     import json
     print(json.dumps(bot_konverso.descriptor, indent=4))
 
-    print("\n\n#### Testing wikipedia")
-    bot_doungdoung = Client.from_url('https://doungdoung.com/api/wikipedia/v1.0/ask')
-    response = bot_doungdoung.ask("amedee", "hello", lang="fr")
-    print("Wikipedia says: %s", response.text)
+    #print("\n\n#### Testing wikipedia")
+    #bot_doungdoung = Client.from_url('https://doungdoung.com/api/wikipedia/v1.0/ask')
+    #response = bot_doungdoung.ask("amedee", "hello", lang="fr")
+    #print("Wikipedia says: %s", response.text)
 
     bot_kwalys = repo.get_client("kwalys.com")
     response = bot_kwalys.ask("amedee", "hello", lang="fr")
-    print("EDF says: %s", response.text)
+    print("EDF replies: ", response.text)
