@@ -9,6 +9,8 @@ Authors:
 
 History:
     - 2020/11/02: Amédée: Initial class implementation
+    - 2020/12/15: Amédée: Adjusting names to be compliant with PEP8
+
 """
 
 from .client import Client

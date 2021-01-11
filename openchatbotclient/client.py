@@ -1,14 +1,21 @@
 """Client for Open Chat Bot.
 
-       Example of usage:
-            from openchatbotclient.client import client
-            myclient = client('bot.domain.com', 8443, path='api')
-            response = myclient.ask("my-userId", "hello")
+   Example of usage:
 
-       In this case next GET request will be invoked:
-            https://bot.domain.com:8443/api/ask
-        with params:
-            {'userId': 'my-userId', 'query': 'hello'}
+        from openchatbotclient.client import Client
+
+        # You can create a Client using the native constructor
+        client = Client('bot.domain.com', 8443, path='api')
+        response = client.ask("my-userId", "hello")
+
+        # Or using a URL to the API
+        client = Client.from_url("https://mybot.mydomain.com/api/v1/ask")
+        response = client.ask("john.doe", "what is the weather today?")
+
+   The 'ask' method causes a GET request to be invoked, such as: 
+        https://bot.domain.com:8443/api/ask
+    with params:
+        {'userId': 'my-userId', 'query': 'hello'}
 
 Authors:
     - Alexander Danilov from Konverso
@@ -18,6 +25,9 @@ History:
     - 2019/11/01: Alexander: Initial class implementation
     - 2020/11/02: Amédée: Renaming class to "client"
     - 2020/11/02: Amédée: Adding the "from_descriptor" static method
+    - 2020/12/15: Amédée: Adding the "from_url" static method
+                          Adjusting names to be PEP8 compliants
+
 """
 
 import json
@@ -97,7 +107,7 @@ class Client:
 
     @staticmethod
     def from_url(url):
-        """Given a "descriptor" instance, returns a new "client" instance"""
+        """Given a URL pointing to the "ask" API, returns a new "client" instance"""
 
         # Extracting from the URL the protocol, the domain, the path
         # token0://token2/token3
@@ -126,6 +136,10 @@ class Client:
 
     @property
     def base_url(self) -> str:
+        """Returns the URL of the remote bot "ask" API web service,
+            that is something like:
+            http[s]://host.domain[:port]/path/to/api/ask
+        """
         url = self.host
 
         if self.port:
