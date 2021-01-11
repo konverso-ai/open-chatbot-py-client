@@ -39,7 +39,7 @@ To get started, either view the test.py file in this module, or consult the help
     from openchatbotclient import client
     help(client)
 
-You may also find complete examples and tutorials in the related GitHub repository:
+View complete examples and tutorials in the related GitHub repository:
     https://github.com/konverso-ai/open-chatbot-py-client
 
 """
