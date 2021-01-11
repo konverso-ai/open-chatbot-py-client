@@ -4,7 +4,7 @@
 
         from openchatbotclient.client import Client
 
-        # You may create a Client using the native constructor
+        # You can create a Client using the native constructor
         client = Client('bot.domain.com', 8443, path='api')
         response = client.ask("my-userId", "hello")
 
@@ -12,7 +12,7 @@
         client = Client.from_url("https://mybot.mydomain.com/api/v1/ask")
         response = client.ask("john.doe", "what is the weather today?")
 
-   The 'ask' method will cause a GET request to be invoked, such as: 
+   The 'ask' method causes a GET request to be invoked, such as: 
         https://bot.domain.com:8443/api/ask
     with params:
         {'userId': 'my-userId', 'query': 'hello'}
