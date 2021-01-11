@@ -10,7 +10,7 @@ Authors:
 
 History:
     - 2020/11/02: Amédée: Initial version.
-    - 2020/12/15: Amédée: Adjusting names to be PEP8 compliants
+    - 2020/12/15: Amédée: Adjusting names to be compliant with PEP8
 
 """
 
