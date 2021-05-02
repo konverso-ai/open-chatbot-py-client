@@ -38,7 +38,7 @@ from .descriptor import Descriptor, ENDPOINT_DEFAULT
 from .exception import ChatbotServerError
 
 class Client:
-    def __init__(self, host: str, port: int = 0, path: str = None, descriptor: Descriptor = None):
+    def __init__(self, host: str, port: int = 0, path: str = None, descriptor: Descriptor = None, headers=None):
         """Create a client that may be queried. The constructor parameters are:
            - host: a host in the format protocol://domain, such as:
               https://konverso.ai
@@ -67,6 +67,8 @@ class Client:
             self.__path = "/" + self.__path
 
         self._headers = {'Content-Type': 'application/json; charset=utf-8'}
+        if headers:
+            self._headers.update(headers)
 
         if descriptor:
             self.descriptor = descriptor
@@ -170,7 +172,7 @@ class Client:
     def api_path(self):
         return self.__path
 
-    def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get', timeout=None):
+    def ask(self, userId: str, query: str, lang: str = None, location: str = None, method: str = 'get', timeout=None, headers=None, params = None):
         """Invoke request to bot and receive answer
            Input parameters:
             - userId : user's identifier
@@ -188,7 +190,15 @@ class Client:
         if not query:
             raise RuntimeError("Query is empty")
 
-        params = {'userId': userId, 'query': query}
+        # Params is the combination of mandatory params and extra ones optionally
+        params = params or {}
+        params.update({'userId': userId, 'query': query})
+
+        # Headers may be updated for the request
+        aggregated_headers = self._headers.copy()
+        if headers:
+            aggregated_headers.update(headers)
+        
         if lang:
             params['lang'] = lang
         if location:
@@ -197,15 +207,18 @@ class Client:
         if method == 'get':
             #print(self.base_url)
             #print(params)
-            r = requests.get("%s"%(self.base_url), params=params, timeout=timeout, verify=False)
+            r = requests.get("%s"%(self.base_url), params=params, headers=aggregated_headers, timeout=timeout, verify=False)
         elif method == 'post':
-            r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=self._headers, timeout=timeout, verify=False)
+            r = requests.post("%s"%(self.base_url), data=json.dumps(params), headers=aggregated_headers, timeout=timeout, verify=False)
         else:
             raise RuntimeError("Unknown method '%s'"%(method))
-        try:
-            # Inner import to avoid cyclic include
-            from . import Response
-            #print(r)
-            return Response(self, self.__process_response(r.json()))
-        except json.decoder.JSONDecodeError:
-            raise RuntimeError("Invalid response : %s"%(r.text))
+
+        if r.status_code != 200:
+            #print("Failed with headers: %s" % json.dumps(self._headers))
+            #print("Failed with params: %s" % json.dumps(params))
+            raise RuntimeError("Invalid response : code %s : %s" % (r.status_code, r.text))
+
+        # Inner import to avoid cyclic include
+        from . import Response
+        #print(r)
+        return Response(self, self.__process_response(r.json()))
